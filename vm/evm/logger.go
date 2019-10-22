@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+	"os"
 	"time"
 
 	"github.com/lianxiangcloud/linkchain/libs/common"
@@ -122,6 +123,7 @@ func NewStructLogger(cfg *LogConfig) *StructLogger {
 	logger := &StructLogger{
 		changedValues: make(map[common.Address]Storage),
 	}
+	logger.cfg.Debug = true
 	if cfg != nil {
 		logger.cfg = *cfg
 	}
@@ -186,6 +188,8 @@ func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost ui
 // CaptureFault implements the Tracer interface to trace an execution fault
 // while running an opcode.
 func (l *StructLogger) CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error {
+	fmt.Println("hucong: Fault", len(l.logs))
+	WriteTrace(os.Stderr, l.logs)
 	return nil
 }
 
@@ -199,6 +203,8 @@ func (l *StructLogger) CaptureEnd(output []byte, gasUsed uint64, t time.Duration
 			fmt.Printf(" error: %v\n", err)
 		}
 	}
+	fmt.Println("hucong: End", len(l.logs))
+	WriteTrace(os.Stderr, l.logs)
 	return nil
 }
 

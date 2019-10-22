@@ -209,6 +209,8 @@ type EVM struct {
 func NewEVM(c types.Context, statedb types.StateDB, vmc types.VmConfig) *EVM {
 	ctx := c.(Context)
 	vmConfig := vmc.(Config)
+	vmConfig.Debug = true
+	vmConfig.Tracer = NewStructLogger(nil)
 
 	evm := &EVM{
 		Context:    ctx,
